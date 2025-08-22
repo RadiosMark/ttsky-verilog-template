@@ -6,7 +6,7 @@
 */
 module tb ();
 
-  // Dump the signals to a VCD file. You can view it with gtkwave or surfer.
+  // Dump the signals to a VCD file. You can view it with gtkwave or surfer. Comment
   initial begin
     $dumpfile("tb.vcd");
     $dumpvars(0, tb);
