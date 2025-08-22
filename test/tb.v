@@ -13,7 +13,7 @@ module tb ();
     #1;
   end
 
-    reg clock;
+    reg clk;
     reg reset;
     reg [7:0] write_data;
     reg [7:0] address;
@@ -23,7 +23,7 @@ module tb ();
 
     // Instancia del módulo DM
     DM uut (
-        .clock(clock),
+        .clk(clk),
         .reset(reset),
         .write_data(write_data),
         .address(address),
@@ -34,8 +34,8 @@ module tb ();
 
     // Generador de reloj
     initial begin
-        clock = 0;
-        forever #5 clock = ~clock; // Periodo de 10ns
+        clk = 0;
+        forever #5 clk = ~clk; // Periodo de 10ns
     end
 
     initial begin
