@@ -13,37 +13,80 @@ module tb ();
     #1;
   end
 
-  // Wire up the inputs and outputs:
-  reg clk;
-  reg rst_n;
-  reg ena;
-  reg [7:0] ui_in;
-  reg [7:0] uio_in;
-  wire [7:0] uo_out;
-  wire [7:0] uio_out;
-  wire [7:0] uio_oe;
-`ifdef GL_TEST
-  wire VPWR = 1'b1;
-  wire VGND = 1'b0;
-`endif
+    reg clock;
+    reg reset;
+    reg [7:0] write_data;
+    reg [7:0] address;
+    reg mem_write;
+    reg mem_read;
+    wire [7:0] read_data;
 
-  // Replace tt_um_example with your module name:
-  tt_um_test_0 user_project (
+    // Instancia del módulo DM
+    DM uut (
+        .clock(clock),
+        .reset(reset),
+        .write_data(write_data),
+        .address(address),
+        .mem_write(mem_write),
+        .mem_read(mem_read),
+        .read_data(read_data)
+    );
 
-      // Include power ports for the Gate Level test:
-`ifdef GL_TEST
-      .VPWR(VPWR),
-      .VGND(VGND),
-`endif
+    // Generador de reloj
+    initial begin
+        clock = 0;
+        forever #5 clock = ~clock; // Periodo de 10ns
+    end
 
-      .ui_in  (ui_in),    // Dedicated inputs
-      .uo_out (uo_out),   // Dedicated outputs
-      .uio_in (uio_in),   // IOs: Input path
-      .uio_out(uio_out),  // IOs: Output path
-      .uio_oe (uio_oe),   // IOs: Enable path (active high: 0=input, 1=output)
-      .ena    (ena),      // enable - goes high when design is selected
-      .clk    (clk),      // clock
-      .rst_n  (rst_n)     // not reset
-  );
+    initial begin
+        // Inicialización
+        reset = 1;
+        mem_write = 0;
+        mem_read = 0;
+        write_data = 8'b0;
+        address = 8'b0;
+
+        #12; // Espera un ciclo de reloj
+        reset = 0;
+
+        // Escritura en la dirección 10
+        address = 8'd10;
+        write_data = 8'hAA;
+        mem_write = 1;
+        #10;
+        mem_write = 0;
+
+        // Lectura de la dirección 10
+        mem_read = 1;
+        #10;
+        mem_read = 0;
+
+        // Escritura en la dirección 20
+        address = 8'd20;
+        write_data = 8'h55;
+        mem_write = 1;
+        #10;
+        mem_write = 0;
+
+        // Lectura de la dirección 20
+        mem_read = 1;
+        #10;
+        mem_read = 0;
+
+        // Lectura de la dirección 0 (debería ser 8'b11111111 por el reset)
+        address = 8'd0;
+        mem_read = 1;
+        #10;
+        mem_read = 0;
+
+        // Lectura de la dirección 1 (debería ser 8'b00000000 por el reset)
+        address = 8'd1;
+        mem_read = 1;
+        #10;
+        mem_read = 0;
+
+        $stop;
+    end
+
 
 endmodule
