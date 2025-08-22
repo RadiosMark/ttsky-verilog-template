@@ -22,7 +22,7 @@ module tb ();
     wire [7:0] read_data;
 
     // Instancia del módulo DM
-    DM uut (
+    tt_um_DM uut (
         .clk(clk),
         .reset(reset),
         .write_data(write_data),
@@ -32,10 +32,10 @@ module tb ();
         .read_data(read_data)
     );
 
-    // Generador de reloj
+    // reloj
     initial begin
         clk = 0;
-        forever #5 clk = ~clk; // Periodo de 10ns
+        forever #5 clk = ~clk; 
     end
 
     initial begin
